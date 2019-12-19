@@ -1,6 +1,6 @@
 %Ryan Cameron - Donaldson Lab, University of Colorado Boulder
 %Created:  12/18/2019
-%Modified: 12/18/2019
+%Modified: 12/19/2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %This script takes the novel and partner median distance permutation data
 %that was split up into first and last 10 minutes and runs some
