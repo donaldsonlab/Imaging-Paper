@@ -2,4 +2,4 @@
 */~$*
 
 #Ignore .asv files
-**/*.asv
+*.asv*
