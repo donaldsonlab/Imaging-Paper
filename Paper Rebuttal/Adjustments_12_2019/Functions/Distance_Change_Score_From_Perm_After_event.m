@@ -131,6 +131,9 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
                     D1 = downsample(index2,17);
                     d(i) = median(D0 - D1);
             end
+%             if isnan(d)
+%                 pause
+%             end 
         end
         %Check for remaining NaN's
         ind_nan = find(isnan(d));

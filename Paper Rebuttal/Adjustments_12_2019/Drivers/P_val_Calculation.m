@@ -9,8 +9,8 @@ cd('Functions')
 close all
 
 %List of animals:
-animals = [ 440   445   451   485   487   532   535   543   546   557  570   573   584   585   586   588   598   599];
-%animals = 487;
+%animals = [ 440   445   451   485   487   532   535   543   546   557  570   573   584   585   586   588   598   599];
+animals = 487;
 %Define parms vector:
 %parms(1) = binsize
 %parms(2) = permutation Number

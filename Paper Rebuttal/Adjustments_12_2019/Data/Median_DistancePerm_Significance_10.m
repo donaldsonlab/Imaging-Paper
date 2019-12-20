@@ -10,7 +10,8 @@
 
 clear all; close all; clc;
 
-animals = [ 440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599]; %List of animals
+%animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599]; %List of animals
+animals = 487;
 
 %Setup the table
 results_significance_P_first_10 = table(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
@@ -50,24 +51,24 @@ for name = dataVec
             %Find how many of those cells had p-vals < .025
             index_p025 = find(dataSmall(:,5) <= 0.025);
             num_cells_025 = dataSmall(index_p025,:);
-            num_025 = length(num_cells_025)/num_cells;
-            num_cells_025 = length(num_cells_025);
+            num_cells_025 = size(num_cells_025,1);
+            num_025 = num_cells_025/num_cells;
             if isempty(num_cells_025)
                 num_cells_025 = 0;
             end
             %<.05
             index_p05 = find(dataSmall(:,5) <= 0.05);
             num_cells_05 = dataSmall(index_p05,:);
-            num_05 = length(num_cells_05)/num_cells;
-            num_cells_05 = length(num_cells_05);
+            num_cells_05 = size(num_cells_05,1);
+            num_05 = num_cells_05/num_cells;
             if isempty(num_cells_05)
                 num_cells_05 = 0;
             end
             %<.10
             index_p10 = find(dataSmall(:,5) <= 0.1);
             num_cells_10 = dataSmall(index_p10,:);
-            num_10 = length(num_cells_10)/num_cells;
-            num_cells_10 = length(num_cells_10);
+            num_cells_10 = size(num_cells_10,1);
+            num_10 = num_cells_10/num_cells;
             if isempty(num_cells_10)
                 num_cells_10 = 0;
             end
@@ -75,24 +76,24 @@ for name = dataVec
             %How many cells had p-vals > .975
             index_p975 = find(dataSmall(:,5) >= 0.975);
             num_cells_975 = dataSmall(index_p975,:);
-            num_975 = length(num_cells_975)/num_cells;
-            num_cells_975 = length(num_cells_975);
+            num_cells_975 = size(num_cells_975,1);
+            num_975 = num_cells_975/num_cells;
             if isempty(num_cells_975)
                 num_cells_975 = 0;
             end
             %>.95
             index_p95 = find(dataSmall(:,5) >= 0.95);
             num_cells_95 = dataSmall(index_p95,:);
-            num_95 = length(num_cells_95)/num_cells;
-            num_cells_95 = length(num_cells_95);
+            num_cells_95 = size(num_cells_95,1);
+            num_95 = num_cells_95/num_cells;
             if isempty(num_cells_95)
                 num_cells_95 = 0;
             end
             %>.90
             index_p90 = find(dataSmall(:,5) >= 0.90);
             num_cells_90 = dataSmall(index_p90,:);
-            num_90 = length(num_cells_90)/num_cells;
-            num_cells_90 = length(num_cells_90);
+            num_cells_90 = size(num_cells_90,1);
+            num_90 = num_cells_90/num_cells;
             if isempty(num_cells_90)
                 num_cells_90 = 0;
             end
