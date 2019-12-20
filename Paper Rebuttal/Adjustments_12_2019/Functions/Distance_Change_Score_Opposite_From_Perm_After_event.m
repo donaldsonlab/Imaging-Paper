@@ -101,7 +101,11 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
         %mean, and one that is all the data.  Nice!
         
         %the median!:
-        Score = median(D0 - D1);
+        %Delete specific EVENTS that have NaN's
+        ind_nan = find(isnan(D0) | isnan(D1));
+        dist_diff = D0-D1;
+        dist_diff(ind_nan) = [];
+        Score = median(dist_diff);
         %and array:
         Cell_Score_Array = D0 - D1;
         
@@ -128,11 +132,19 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
                 case 'Novel'
                     D0 = downsample(index1,16);
                     D1 = downsample(index2,16);
-                    d(i) = median(D0 - D1);
+                    %Delete specific EVENTS that have NaN's
+                    ind_nan = find(isnan(D0) | isnan(D1));
+                    dist_diff = D0-D1;
+                    dist_diff(ind_nan) = [];
+                    d(i) = median(dist_diff);
                 case 'Partner'
                     D0 = downsample(index1,17);
                     D1 = downsample(index2,17);
-                    d(i) = median(D0 - D1);
+                    %Delete specific EVENTS that have NaN's
+                    ind_nan = find(isnan(D0) | isnan(D1));
+                    dist_diff = D0-D1;
+                    dist_diff(ind_nan) = [];
+                    d(i) = median(dist_diff);
             end
         end
         %Check for remaining NaN's
