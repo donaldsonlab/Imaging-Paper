@@ -100,7 +100,7 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
         %the median!:
         %Delete specific EVENTS that have NaN's
         ind_nan = find(isnan(D0) | isnan(D1));
-        dist_diff = D0-D1;
+        dist_diff = D1-D0;
         dist_diff(ind_nan) = [];
         Score = median(dist_diff);
         %and array:
@@ -132,7 +132,7 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
                     
                     %Delete specific EVENTS that have NaN's
                     ind_nan = find(isnan(D0) | isnan(D1));
-                    dist_diff = D0-D1;
+                    dist_diff = D1-D0;
                     dist_diff(ind_nan) = [];
                     d(i) = median(dist_diff);
 %                     if isnan(d(i))
@@ -144,7 +144,7 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
                     
                     %Delete specific EVENTS that have NaN's
                     ind_nan = find(isnan(D0) | isnan(D1));
-                    dist_diff = D0-D1;
+                    dist_diff = D1-D0;
                     dist_diff(ind_nan) = [];
                     d(i) = median(dist_diff);
 %                     if isnan(d(i))

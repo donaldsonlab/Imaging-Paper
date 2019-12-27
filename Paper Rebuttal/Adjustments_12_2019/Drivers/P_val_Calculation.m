@@ -9,8 +9,7 @@ cd('Functions')
 close all
 
 %List of animals:
-%animals = [ 440   445   451   485   487   532   535   543   546   557  570   573   584   585   586   588   598   599];
-animals = 543;
+animals = [ 440   445   451   485   487   532   535   543   546   557  570   573   584   585   586   588   598   599];
 %Define parms vector:
 %parms(1) = binsize
 %parms(2) = permutation Number
@@ -35,8 +34,8 @@ for A = 1:length(animals)
 %         %UNCOMMENT THIS SECTION TO SPLIT INTO 10 MINUTE BINS
 %         index10 = [1:find(round(cells(:,1),2) == round(cells(1,1) + timeSec,2))]; %Indices of the first 10 minutes
 %         index20 = [index10(end)+1: size(cells,1)]; %Indices of the last 10 minutes
-%         cells = cells(index10,:);
-%         downsample = downsample(index10,:);
+%         cells = cells(index20,:);
+%         downsample = downsample(index20,:);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         %%get rid of the time stamps:

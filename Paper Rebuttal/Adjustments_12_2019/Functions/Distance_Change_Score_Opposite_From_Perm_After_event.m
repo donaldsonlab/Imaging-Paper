@@ -103,11 +103,11 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
         %the median!:
         %Delete specific EVENTS that have NaN's
         ind_nan = find(isnan(D0) | isnan(D1));
-        dist_diff = D0-D1;
+        dist_diff = D1-D0;
         dist_diff(ind_nan) = [];
         Score = median(dist_diff);
         %and array:
-        Cell_Score_Array = D0 - D1;
+        Cell_Score_Array = D1-D0;
         
         Time_Locations = index1;
     else
@@ -134,7 +134,7 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
                     D1 = downsample(index2,16);
                     %Delete specific EVENTS that have NaN's
                     ind_nan = find(isnan(D0) | isnan(D1));
-                    dist_diff = D0-D1;
+                    dist_diff = D1-D0;
                     dist_diff(ind_nan) = [];
                     d(i) = median(dist_diff);
                 case 'Partner'
@@ -142,7 +142,7 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
                     D1 = downsample(index2,17);
                     %Delete specific EVENTS that have NaN's
                     ind_nan = find(isnan(D0) | isnan(D1));
-                    dist_diff = D0-D1;
+                    dist_diff = D1-D0;
                     dist_diff(ind_nan) = [];
                     d(i) = median(dist_diff);
             end

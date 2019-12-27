@@ -81,7 +81,7 @@ for an=animals %Loop through each animal
                 
                 if t == 1
                     results10(count10,:) = table(an,ep,cellNum,partnerVal,novelVal,pEvents,nEvents,pDist,nDist);
-                    count10 = count10 +1;
+                    count10 = count10 + 1;
                 elseif t == 2
                     results20(count20,:) = table(an,ep,cellNum,partnerVal,novelVal,pEvents,nEvents,pDist,nDist);
                     count20 = count20 + 1;

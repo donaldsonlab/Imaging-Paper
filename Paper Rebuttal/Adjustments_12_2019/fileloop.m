@@ -3,8 +3,8 @@ PWD = pwd;
 %cd('/Users/elliottsaslow/Google Drive/Vole imaging master data')
 %cd('C:\Users\DonaldsonLab\Google Drive\Vole imaging master data')
 % cd('C:\Users\lccam\Google Drive\Vole imaging master data')
-% cd('G:\My Drive\Vole imaging master data')
-cd('C:\Users\lccam\Google Drive\Donaldson Lab\Vole imaging master data')
+cd('G:\My Drive\Donaldson Lab\Vole imaging master data')
+%cd('C:\Users\lccam\Google Drive\Donaldson Lab\Vole imaging master data')
 voles=[570 598 599 451 487 543 546 557 573 440 585 586 485 532 535 584 588 445 566 589];
 cohorts=[14 14 14 8 9 10 11 11 12 8 12 13 9 10 10 12 12 8 13 13];
 index = find(vole_num == voles);
