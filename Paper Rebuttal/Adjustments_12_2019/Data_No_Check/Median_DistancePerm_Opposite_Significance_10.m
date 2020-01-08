@@ -13,25 +13,25 @@ clear all; close all; clc;
 animals = [ 440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599]; %List of animals
 
 %Setup the table
-results_significance_opposite_P_all_time = table(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+results_significance_opposite_P_last_10 = table(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
 VariNames = {'Animal','Epoch','p_cells','p_025','num_025','p_05','num_05','p_10','num_10','p_975','num_975','p_95','num_95','p_90','num_90'};
-results_significance_opposite_P_all_time.Properties.VariableNames = VariNames;
+results_significance_opposite_P_last_10.Properties.VariableNames = VariNames;
 
-results_significance_opposite_N_all_time = table(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+results_significance_opposite_N_last_10 = table(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
 VariNames = {'Animal','Epoch','n_cells','n_025','num_025','n_05','num_05','n_10','num_10','n_975','num_975','n_95','num_95','n_90','num_90'};
-results_significance_opposite_N_all_time.Properties.VariableNames = VariNames;
+results_significance_opposite_N_last_10.Properties.VariableNames = VariNames;
 
-dataVec = ["P_opposite_all_time.mat","N_opposite_all_time.mat"];
+dataVec = ["P_opposite_last_10.mat","N_opposite_last_10.mat"];
 
 check = 1;
 for name = dataVec
     load(name);
     if check == 1
-        P_opposite_all_time.Var4 = [];
-        data = table2array(P_opposite_all_time);
+        P_opposite_last_10.Var4 = [];
+        data = table2array(P_opposite_last_10);
     elseif check == 2
-        N_opposite_all_time.Var4 = [];
-        data = table2array(N_opposite_all_time);
+        N_opposite_last_10.Var4 = [];
+        data = table2array(N_opposite_last_10);
     end
     count = 1;
     for an = animals %Loop through each animal
@@ -99,15 +99,15 @@ for name = dataVec
             
             %% Assign Variables to table
             if check == 1
-                results_significance_opposite_P_all_time(count,:) = table(an,ep,num_cells,num_025,num_cells_025,num_05,num_cells_05,num_10,num_cells_10,num_975,num_cells_975,num_95,num_cells_95,num_90,num_cells_90);
+                results_significance_opposite_P_last_10(count,:) = table(an,ep,num_cells,num_025,num_cells_025,num_05,num_cells_05,num_10,num_cells_10,num_975,num_cells_975,num_95,num_cells_95,num_90,num_cells_90);
                 count = count + 1;
             elseif check == 2
-                results_significance_opposite_N_all_time(count,:) = table(an,ep,num_cells,num_025,num_cells_025,num_05,num_cells_05,num_10,num_cells_10,num_975,num_cells_975,num_95,num_cells_95,num_90,num_cells_90);
+                results_significance_opposite_N_last_10(count,:) = table(an,ep,num_cells,num_025,num_cells_025,num_05,num_cells_05,num_10,num_cells_10,num_975,num_cells_975,num_95,num_cells_95,num_90,num_cells_90);
                 count = count + 1;
             end
         end
     end
     check = 2;
 end
-writetable(results_significance_opposite_P_all_time,'results_significance_opposite_P_all_time.xlsx')
-writetable(results_significance_opposite_N_all_time,'results_significance_opposite_N_all_time.xlsx')
+writetable(results_significance_opposite_P_last_10,'results_significance_opposite_P_last_10.xlsx')
+writetable(results_significance_opposite_N_last_10,'results_significance_opposite_N_last_10.xlsx')

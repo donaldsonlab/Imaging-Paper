@@ -39,7 +39,7 @@ function [ Score,Cell_Score_Array,Time_Locations,P_val,Deviation_Score] = Distan
 %working on.
 
 % check to make sure that there is more than 100 frames of interaction
-if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) == 1)) > 100
+%if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) == 1)) > 100
     switch str
         case 'Novel'
             %only take the novel chamber data for the trace data and the beh
@@ -160,12 +160,12 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
         Deviation_Score = NaN;
         P_val = NaN;
     end
-else
-    RATE = NaN;
-    P_val = NaN;
-    Score = NaN;
-    Cell_Score_Array = NaN;
-    Time_Locations = NaN;
-    Deviation_Score = NaN;
+% else
+%     RATE = NaN;
+%     P_val = NaN;
+%     Score = NaN;
+%     Cell_Score_Array = NaN;
+%     Time_Locations = NaN;
+%     Deviation_Score = NaN;
 end
-end
+%end

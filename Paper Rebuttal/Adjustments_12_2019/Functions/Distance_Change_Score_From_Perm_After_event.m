@@ -36,7 +36,7 @@ function [ Score,Cell_Score_Array,Time_Locations,P_val,Deviation_Score] = Distan
 %working on.
 
 % check to make sure that there is more than 100 frames of interaction
-if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) == 1)) > 100
+%if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) == 1)) > 100
     switch str
         case 'Novel'
             %only take the novel chamber data for the trace data and the beh
@@ -64,8 +64,6 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
     ind1 = downsampleSmall(ind1,1);%Now find the time stamps for these
     for q = 1:length(ind1)
         index1(q) = find(downsample(:,1) == ind1(q));%find the index where these events occurred
-        
-        
     end
     %Notice how downsampleSmall is used here.
     [END,~] = size(downsample);
@@ -170,12 +168,12 @@ if length(find(downsample(:,20) == 1)) > 100  && length(find(downsample(:,18) ==
         Deviation_Score = NaN;
         P_val = NaN;
     end
-else
-    RATE = NaN;
-    P_val = NaN;
-    Score = NaN;
-    Cell_Score_Array = NaN;
-    Time_Locations = NaN;
-    Deviation_Score = NaN;
+% else
+%     RATE = NaN;
+%     P_val = NaN;
+%     Score = NaN;
+%     Cell_Score_Array = NaN;
+%     Time_Locations = NaN;
+%     Deviation_Score = NaN;
 end
-end
+%end
