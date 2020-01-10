@@ -15,19 +15,19 @@
 function [before_dist,after_dist,num_events] = median_distance_count(cell_vec,behavior)
 event_index = find(cell_vec);
 num_events = length(event_index);
-event_loc = behavior(event_index,2:3);
+event_loc = behavior(event_index,9:10);
 
 %Correlate those indices with the behavior matrix
 before_index = event_index - 5;
 before_index(find(before_index < 1)) = 1;
-before_loc = behavior(before_index,2:3); %x and y
+before_loc = behavior(before_index,9:10); %x and y
 before_dist = event_loc - before_loc;
 before_dist = hypot(before_dist(:,1),before_dist(:,2));
 before_dist = median(before_dist);
 
 after_index = event_index + 5;
 after_index(find(after_index > length(after_index))) = length(after_index);
-after_loc = behavior(after_index,2:3);
+after_loc = behavior(after_index,9:10);
 after_dist = after_loc - event_loc;
 after_dist = hypot(after_dist(:,1),after_dist(:,2));
 after_dist = median(after_dist);
