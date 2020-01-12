@@ -23,6 +23,7 @@ before_index(find(before_index < 1)) = 1;
 before_loc = behavior(before_index,9:10); %x and y
 before_dist = event_loc - before_loc;
 before_dist = hypot(before_dist(:,1),before_dist(:,2));
+before_dist(isnan(before_dist)) = [];
 before_dist = median(before_dist);
 
 after_index = event_index + 5;
@@ -30,5 +31,6 @@ after_index(find(after_index > length(after_index))) = length(after_index);
 after_loc = behavior(after_index,9:10);
 after_dist = after_loc - event_loc;
 after_dist = hypot(after_dist(:,1),after_dist(:,2));
+after_dist(isnan(after_dist)) = [];
 after_dist = median(after_dist);
 end

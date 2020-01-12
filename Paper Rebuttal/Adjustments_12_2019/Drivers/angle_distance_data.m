@@ -11,6 +11,7 @@
 clear all; close all; clc;
 
 animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599];
+%animals = 451;
 
 cd ..
 cd('Functions')
@@ -25,6 +26,22 @@ for an = animals
         cells(:,1) = []; %Vector of times
         cells(find(cells > 0)) = 1; %Makes all events = 1
         num_cells = size(cells,2);
+        %------------------------------------------------------------------
+        %This section filters depending on partner, novel, or center
+        %chamber
+        %------------------------------------------------------------------
+%         %PARTNER
+%         index = find(behavior(:,18));
+%         cells = cells(index,:);
+%         
+%         %Novel
+%         index = find(behavior(:,20));
+%         cells = cells(index,:);
+%         
+        %Center
+        index = find(behavior(:,19));
+        cells = cells(index,:);
+        %------------------------------------------------------------------
         for i = 1:num_cells
             cell_vec = cells(:,i);
             [before_dist,after_dist,num_events] = median_distance_count(cell_vec,behavior);
@@ -33,5 +50,11 @@ for an = animals
         end
     end
 end
+angle_distance_table_center = array2table(data_table);
+angle_distance_table_center.Properties.VariableNames = {'Animal','Epoch','Cell','Theta_(deg)','Theta_Pval','before_distance','after_distance','Number_events'};
+cd ..
+cd('Overlaps')
+save('angle_distance_table_center.mat','angle_distance_table_center');
+writetable(angle_distance_table_center,'angle_distance_table_center.xlsx');
             
             

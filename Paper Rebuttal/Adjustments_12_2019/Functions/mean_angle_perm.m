@@ -28,12 +28,13 @@ after_loc = behavior(after_index,9:10);
 after_vec = after_loc - event_loc;
 
 %Find the angle with the dot product
-cos_theta = (dot(before_vec,after_vec))./(hypot(before_vec(:,1),before_vec(:,2)).*hypot(after_vec(:,1),after_vec(:,2)));
+cos_theta = (dot(before_vec,after_vec,2))./(hypot(before_vec(:,1),before_vec(:,2)).*hypot(after_vec(:,1),after_vec(:,2)));
 theta = acosd(cos_theta);
+theta = round(theta,3);
+theta(isnan(theta)) = [];
+ind = find(theta > 180);
+theta(ind) = 360 - theta(ind);
 theta = mean(theta);
-if theta > 180
-    theta = 360 - theta;
-end
 
 %Now run the permutation
 for perm = 1:1000
@@ -52,12 +53,14 @@ for perm = 1:1000
     after_vec_perm = after_loc_perm - event_loc_perm;
     
     %Find the angle
-    cos_theta_perm = (dot(before_vec_perm,after_vec_perm))./(hypot(before_vec_perm(:,1),before_vec_perm(:,2))*hypot(after_vec_perm(:,1),after_vec_perm(:,2)));
-    theta_perm(perm) = mean(acosd(cos_theta_perm));
-    if theta_perm(perm) > 180
-        theta_perm(perm) = 360 - theta_perm(perm);
-    end
+    cos_theta_perm = (dot(before_vec_perm,after_vec_perm,2))./(hypot(before_vec_perm(:,1),before_vec_perm(:,2)).*hypot(after_vec_perm(:,1),after_vec_perm(:,2)));
+    theta_perm = acosd(cos_theta_perm);
+    theta_perm = round(theta_perm,3);
+    theta_perm(isnan(theta_perm)) = [];
+    ind = find(theta_perm > 180);
+    theta_perm(ind) = 360 - theta_perm(ind);
+    theta_new(perm) = mean(theta_perm);
 end
 %DON'T KNOW IF THIS IS CORRECT WAY TO FIND THE PVAL WE WANT
-p_val = length(find(theta_perm < theta))/1000 * 100;
+p_val = length(find(theta_new < theta))/1000 * 100;
 end
