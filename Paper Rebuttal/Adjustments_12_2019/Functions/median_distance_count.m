@@ -27,7 +27,7 @@ before_dist(isnan(before_dist)) = [];
 before_dist = median(before_dist);
 
 after_index = event_index + 5;
-after_index(find(after_index > length(after_index))) = length(after_index);
+after_index(find(after_index > length(cell_vec))) = length(cell_vec);
 after_loc = behavior(after_index,9:10);
 after_dist = after_loc - event_loc;
 after_dist = hypot(after_dist(:,1),after_dist(:,2));

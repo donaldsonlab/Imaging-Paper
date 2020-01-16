@@ -10,14 +10,14 @@
 
 clear all; close all; clc;
 
-animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599];
-%animals = 451;
+%animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599];
+animals = 445;
 
 cd ..
 cd('Functions')
 data_table = [];
 for an = animals
-    for ep = 1:3
+    for ep = 2%1:3
         %First grab the data from the google drive using the fileloop
         %function
         [cells,behavior] = fileloop(an,ep);
@@ -38,9 +38,9 @@ for an = animals
 %         index = find(behavior(:,20));
 %         cells = cells(index,:);
 %         
-        %Center
-        index = find(behavior(:,19));
-        cells = cells(index,:);
+%         %Center
+%         index = find(behavior(:,19));
+%         cells = cells(index,:);
         %------------------------------------------------------------------
         for i = 1:num_cells
             cell_vec = cells(:,i);
