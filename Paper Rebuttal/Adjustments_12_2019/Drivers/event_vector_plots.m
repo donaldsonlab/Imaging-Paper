@@ -20,6 +20,7 @@ cd ..
 cd Data_No_Check
 animal_type = 'Partner';
 chamber_type = ''; %OR 'opposite'
+direction_type = 'approach';
 [data_tab] = loadtable(animal_type,chamber_type);
 
 cd ..
@@ -38,6 +39,17 @@ for an = animals
         %Only plot cells with greater than 5 events and less than 15
         small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
         small_table = small_table(small_index,:);
+        
+        switch direction_type
+            case 'approach'
+                small_index = find(data_tab.P_val <= 10);
+                small_table = small_table(small_index,:);
+            case 'departure'
+                small_index = find(data_tab.P_val >= 90);
+                small_table = small_table(small_index,:);
+            otherwise
+                error('No direction specified')
+        end
         
         cell_list = small_table.Cells;
         for i = cell_list

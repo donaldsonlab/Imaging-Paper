@@ -20,6 +20,7 @@ cd ..
 cd Data_No_Check
 animal_type = 'Partner';
 chamber_type = ''; %OR 'opposite'
+direction_type = 'approach';
 [data_tab] = loadtable(animal_type,chamber_type);
 
 cd ..
@@ -39,6 +40,17 @@ for an = animals
         small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
         small_table = small_table(small_index,:);
         
+        switch direction_type
+            case 'approach'
+                small_index = find(data_tab.P_val <= 10);
+                small_table = small_table(small_index,:);
+            case 'departure'
+                small_index = find(data_tab.P_val >= 90);
+                small_table = small_table(small_index,:);
+            otherwise
+                error('No direction specified')
+        end
+        
         cell_list = small_table.Cells;
         for i = cell_list
             cell_vec = events(:,i);
@@ -46,10 +58,9 @@ for an = animals
             vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
             u = vector_data.after_vec(:,1);
             v = vector_data.after_vec(:,2);
-            x = vector_data.event_loc(:,
+            x = vector_data.event_loc(:,1);
+            y = vector_data.event_loc(:,2);
         end
-        
-        
     end
 end
 
