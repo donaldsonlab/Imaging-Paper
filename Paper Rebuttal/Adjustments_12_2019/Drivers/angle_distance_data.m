@@ -1,6 +1,6 @@
 %Ryan Cameron - University of Colorado, Donaldson Lab
 %Created: 1/10/2020
-%Edited:  1/10/2020
+%Edited:  1/23/2020
 %--------------------------------------------------------------------------
 %This is just outputting the data for the median distance change by the
 %animal in the 1 second before and after ALL events. This is not dependant
@@ -10,14 +10,14 @@
 
 clear all; close all; clc;
 
-%animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599];
-animals = 445;
+animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599];
+%animals = 445;
 
 cd ..
 cd('Functions')
 data_table = [];
 for an = animals
-    for ep = 2%1:3
+    for ep = 1:3
         %First grab the data from the google drive using the fileloop
         %function
         [cells,behavior] = fileloop(an,ep);
@@ -45,7 +45,7 @@ for an = animals
         for i = 1:num_cells
             cell_vec = cells(:,i);
             [before_dist,after_dist,num_events] = median_distance_count(cell_vec,behavior);
-            [theta,p_val] = mean_angle_perm(cell_vec,behavior);
+            [theta,p_val,~] = mean_angle_perm(cell_vec,behavior,'yes');
             data_table = [data_table;an,ep,i,theta,p_val,before_dist,after_dist,num_events];
         end
     end

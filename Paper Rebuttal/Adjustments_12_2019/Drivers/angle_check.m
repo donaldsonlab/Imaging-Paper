@@ -1,6 +1,6 @@
 %Ryan Cameron
 %Created: 1/21/2020
-%Edited:  1/21/2020
+%Edited:  1/23/2020
 %--------------------------------------------------------------------------
 %This script plots some vectors to make sure that the angle calculations
 %are reasonable.

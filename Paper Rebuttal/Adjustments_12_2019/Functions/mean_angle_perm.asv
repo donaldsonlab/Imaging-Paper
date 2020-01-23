@@ -41,8 +41,7 @@ theta(ind) = 360 - theta(ind);
 theta = mean(theta);
 
 %Now run the permutation
-perm = lower(perm);
-if strcmp(perm,'yes')
+if strcmp(lower(
     for perm = 1:1000
         cell_vec_perm = cell_vec(randperm(length(cell_vec))); %Shuffles the events
         event_index_perm = find(cell_vec_perm);
@@ -70,8 +69,5 @@ if strcmp(perm,'yes')
     end
     %DON'T KNOW IF THIS IS CORRECT WAY TO FIND THE PVAL WE WANT
     p_val = length(find(theta_new < theta))/1000 * 100;
-else
-    p_val = NaN;
-    fprintf('No Pcal computed');
 end
 end
