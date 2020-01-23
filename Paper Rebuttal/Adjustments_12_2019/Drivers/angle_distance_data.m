@@ -50,11 +50,11 @@ for an = animals
         end
     end
 end
-angle_distance_table_center = array2table(data_table);
-angle_distance_table_center.Properties.VariableNames = {'Animal','Epoch','Cell','Theta_(deg)','Theta_Pval','before_distance','after_distance','Number_events'};
+angle_distance_table_all = array2table(data_table);
+angle_distance_table_all.Properties.VariableNames = {'Animal','Epoch','Cell','Theta_deg','Theta_Pval','before_distance','after_distance','Number_events'};
 cd ..
 cd('Overlaps')
-save('angle_distance_table_center.mat','angle_distance_table_center');
-writetable(angle_distance_table_center,'angle_distance_table_center.xlsx');
+save('angle_distance_table_all.mat','angle_distance_table_all');
+writetable(angle_distance_table_all,'angle_distance_table_all.xlsx');
             
             

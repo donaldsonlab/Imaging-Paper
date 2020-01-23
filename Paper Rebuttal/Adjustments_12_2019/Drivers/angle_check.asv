@@ -20,7 +20,6 @@ small_events_table = angle_distance_table_all(ind_small_event,:);
 
 cd ..
 cd Functions
-angle_vec = small_events_table.Theta_(deg);
 
 for i = 1:size(small_events_table,1)
     an = small_events_table.Animal(i);
@@ -66,5 +65,5 @@ for i = 1:size(small_events_table,1)
     grid on
     xlabel('X-direction [pixels]')
     ylabel('Y-direction [pixels]')
-    title(sprintf('%.3f Degrees',small_events_table.Theta_(deg)(i)))
+    title(sprintf('%.3f Degrees',small_events_table.Theta_(deg)(i)
 end
