@@ -18,77 +18,66 @@ load('angle_distance_table_all.mat')
 
 cd ..
 cd Data_No_Check
+
 animal_type = 'Partner';
 chamber_type = ''; %OR 'opposite'
-direction_type = 'approach';
-data_tab = loadtable(animal_type,chamber_type);
+data_tab = loadtable(animal_type,'');
 data_tab_opp = loadtable(animal_type,'opposite');
 
-cd ..
-cd Functions
 for an = animals
     for ep = 1:3
-        %Pull the event and bvehavior data
-        [events, behavior] = fileloop(an,ep);
-        events(:,1) = [];
-        events(find(events > 0)) = 1;
         
-        %Reduce the size of the angle table to the right animal and epoch
-        small_index = find(angle_distance_table_all.Animal == an & angle_distance_table_all.Epoch == ep);
-        data_index = find(data_tab.animal == an & data_tab.epoch == ep);
-        data_opp_index = find(data_tab_opp.animal == an & data_tab_opp.epoch == ep);
-        
-        small_table = angle_distance_table_all(small_index,:);
-        small_data = data_tab(data_index,:);
-        small_data_opp = data_tab_opp(data_opp_index,:);
-        
-        %Only plot cells with greater than 5 events and less than 15
-        small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
-        small_table = small_table(small_index,:);
-        
-        switch direction_type
-            case 'approach'
-                small_index = find(small.P_val <= 10);
-                small_table = small_table(small_index,:);
-                
-                small_index_opp = find(data_tab_opp.P_val <= 10);
-                small_table_opp = small_table(small_index_opp);
-            case 'departure'
-                small_index = find(data_tab.P_val >= 90);
-                small_table = small_table(small_index,:);
-                
-                small_index_opp = find(data_tab_opp.P_val >= 90);
-                small_table_opp = small_table(small_index_opp);
-            otherwise
-                error('No direction specified')
-        end
-        
-        figure;
-        subplot(2,1,1)
-        hold on
-        cell_list = small_table.Cells;
-        for i = cell_list
-            cell_vec = events(:,i);
-            [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
-            vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
-            u = vector_data.after_vec(:,1);
-            v = vector_data.after_vec(:,2);
-            x = vector_data.event_loc(:,1);
-            y = vector_data.event_loc(:,2);
-            quiver(x,y,u,v)
-        end
-        
-        %Now I need to build the opposite approach/departure data
-        cell_list = small_table_opp.Cells;
-        for i = cell_list
-            cell_vec = events(:,i);
-            [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
-            vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
-            u = vector_data.after_vec(:,1);
-            v = vector_data.after_vec(:,2);
-            x = vector_data.event_loc(:,1);
-            y = vector_data.event_loc(:,2);
-            quiver(x,y,u,v)
+            cd ..
+            cd Functions
+            %Pull the event and bvehavior data
+            [events, behavior] = fileloop(an,ep);
+            events(:,1) = [];
+            events(find(events > 0)) = 1;
+            
+            %Reduce the size of the angle table to the right animal and epoch
+            small_index = find(angle_distance_table_all.Animal == an & angle_distance_table_all.Epoch == ep);
+            data_index = find(data_tab.animal == an & data_tab.epoch == ep);
+            data_opp_index = find(data_tab_opp.animal == an & data_tab_opp.epoch == ep);
+            
+            small_table = angle_distance_table_all(small_index,:);
+            small_data = data_tab(data_index,:);
+            small_data_opp = data_tab_opp(data_opp_index,:);
+            
+            if (size(small_table,1)~=size(small_data,1) && size(small_table,1)~=size(small_data_opp,1))
+                fprintf('Data Table Not the Same Size')
+                pause
+            end
+            
+            %Only plot cells with greater than 5 events and less than 15
+            small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
+            small_table = small_table(small_index,:);
+            small_data = small_data(small_index,:);
+            small_data_opp = small_data_opp(small_index,:);
+            
+            switch direction_type
+                case 'approach'
+                    small_index = find(small_data.P_val <= 10);
+                    plot_table = small_table(small_index,:);
+                    
+                    small_index_opp = find(small_data_opp.P_val <= 10);
+                    plot_table_opp = small_table(small_index_opp,:);
+                case 'departure'
+                    small_index = find(data_tab.P_val >= 90);
+                    plot_table = small_table(small_index,:);
+                    
+                    small_index_opp = find(data_tab_opp.P_val >= 90);
+                    plot_table_opp = small_table(small_index_opp);
+                otherwise
+                    error('No direction specified')
+            end
+            
+            fig = figure;
+            subplot(2,1,1)
+            xlim([0 650])
+            title('Partner Approach')
+            hold on
+            grid on
+            plotVecs(fig,plot_table,plot_table_opp,events,behavior)
         end
     end
 end
@@ -104,4 +93,33 @@ data_struct = load(filename);
 data_cell = extractfield(data_struct,file);
 data_tab = data_cell{1};
 data_tab.Var4 = [];
+end
+
+function [] = plotVecs(fig,plot_table,plot_table_opp,events,behavior)
+figure(fig)
+%set(fig,'Visible','off')
+cell_list = plot_table.Cell;
+for i = cell_list'
+    cell_vec = events(:,i);
+    [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
+    vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
+    u = vector_data.after_vec(:,1);
+    v = vector_data.after_vec(:,2);
+    x = vector_data.event_loc(:,1);
+    y = vector_data.event_loc(:,2);
+    quiver(x,y,u,v)
+end
+
+%Now I need to build the opposite approach/departure data
+cell_list = plot_table_opp.Cell;
+for i = cell_list'
+    cell_vec = events(:,i);
+    [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
+    vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
+    u = vector_data.after_vec(:,1);
+    v = vector_data.after_vec(:,2);
+    x = vector_data.event_loc(:,1);
+    y = vector_data.event_loc(:,2);
+    quiver(x,y,u,v)
+end
 end
