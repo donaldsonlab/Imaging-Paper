@@ -65,20 +65,25 @@ for an = animals
                     plot_table_opp = small_table(small_index_opp,:);
                     
                     subplot(2,1,1)
+                    title('Partner Approach')
+                    xlabel('X-Axis [pixels]')
+                    ylabel('Y-Axis [pixels]')
                 case 'departure'
-                    small_index = find(data_tab.P_val >= 90);
+                    small_index = find(small_data.P_val >= 90);
                     plot_table = small_table(small_index,:);
                     
-                    small_index_opp = find(data_tab_opp.P_val >= 90);
-                    plot_table_opp = small_table(small_index_opp);
+                    small_index_opp = find(small_data_opp.P_val >= 90);
+                    plot_table_opp = small_table(small_index_opp,:);
                     
                     subplot(2,1,2)
+                    title('Partner Departure')
+                    xlabel('X-Axis [pixels]')
+                    ylabel('Y-Axis [pixels]')
                 otherwise
                     error('No direction specified')
             end
 
-            xlim([0 650])
-            title('Partner Approach')
+            %xlim([0 650])
             hold on
             grid on
             plotVecs(fig,plot_table,plot_table_opp,events,behavior)
@@ -111,7 +116,7 @@ for i = cell_list'
     v = vector_data.after_vec(:,2);
     x = vector_data.event_loc(:,1);
     y = vector_data.event_loc(:,2);
-    quiver(x,y,u,v)
+    quiver(x,y,u,v,'r')
 end
 
 %Now I need to build the opposite approach/departure data
@@ -124,6 +129,6 @@ for i = cell_list'
     v = vector_data.after_vec(:,2);
     x = vector_data.event_loc(:,1);
     y = vector_data.event_loc(:,2);
-    quiver(x,y,u,v)
+    quiver(x,y,u,v,'b')
 end
 end

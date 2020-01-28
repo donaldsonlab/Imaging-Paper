@@ -27,33 +27,35 @@ data_tab_opp = loadtable(animal_type,'opposite');
 for an = animals
     for ep = 1:3
         
-            cd ..
-            cd Functions
-            %Pull the event and bvehavior data
-            [events, behavior] = fileloop(an,ep);
-            events(:,1) = [];
-            events(find(events > 0)) = 1;
-            
-            %Reduce the size of the angle table to the right animal and epoch
-            small_index = find(angle_distance_table_all.Animal == an & angle_distance_table_all.Epoch == ep);
-            data_index = find(data_tab.animal == an & data_tab.epoch == ep);
-            data_opp_index = find(data_tab_opp.animal == an & data_tab_opp.epoch == ep);
-            
-            small_table = angle_distance_table_all(small_index,:);
-            small_data = data_tab(data_index,:);
-            small_data_opp = data_tab_opp(data_opp_index,:);
-            
-            if (size(small_table,1)~=size(small_data,1) && size(small_table,1)~=size(small_data_opp,1))
-                fprintf('Data Table Not the Same Size')
-                pause
-            end
-            
-            %Only plot cells with greater than 5 events and less than 15
-            small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
-            small_table = small_table(small_index,:);
-            small_data = small_data(small_index,:);
-            small_data_opp = small_data_opp(small_index,:);
-            
+        cd ..
+        cd Functions
+        %Pull the event and bvehavior data
+        [events, behavior] = fileloop(an,ep);
+        events(:,1) = [];
+        events(find(events > 0)) = 1;
+        
+        %Reduce the size of the angle table to the right animal and epoch
+        small_index = find(angle_distance_table_all.Animal == an & angle_distance_table_all.Epoch == ep);
+        data_index = find(data_tab.animal == an & data_tab.epoch == ep);
+        data_opp_index = find(data_tab_opp.animal == an & data_tab_opp.epoch == ep);
+        
+        small_table = angle_distance_table_all(small_index,:);
+        small_data = data_tab(data_index,:);
+        small_data_opp = data_tab_opp(data_opp_index,:);
+        
+        if (size(small_table,1)~=size(small_data,1) && size(small_table,1)~=size(small_data_opp,1))
+            fprintf('Data Table Not the Same Size')
+            pause
+        end
+        
+        %Only plot cells with greater than 5 events and less than 15
+        small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
+        small_table = small_table(small_index,:);
+        small_data = small_data(small_index,:);
+        small_data_opp = small_data_opp(small_index,:);
+        
+        fig = figure;
+        for direction_type = ["approach","departure"]
             switch direction_type
                 case 'approach'
                     small_index = find(small_data.P_val <= 10);
@@ -61,20 +63,25 @@ for an = animals
                     
                     small_index_opp = find(small_data_opp.P_val <= 10);
                     plot_table_opp = small_table(small_index_opp,:);
+                    
+                    subplot(2,1,1)
+                    title('Partner Approach')
+                    xlabel('X-Axis [pixels])')
+                    ylabel('Y-Axis [pixels]
                 case 'departure'
-                    small_index = find(data_tab.P_val >= 90);
+                    small_index = find(small_data.P_val >= 90);
                     plot_table = small_table(small_index,:);
                     
-                    small_index_opp = find(data_tab_opp.P_val >= 90);
-                    plot_table_opp = small_table(small_index_opp);
+                    small_index_opp = find(small_data_opp.P_val >= 90);
+                    plot_table_opp = small_table(small_index_opp,:);
+                    
+                    subplot(2,1,2)
+                    title('Partner Departure')
                 otherwise
                     error('No direction specified')
             end
-            
-            fig = figure;
-            subplot(2,1,1)
+
             xlim([0 650])
-            title('Partner Approach')
             hold on
             grid on
             plotVecs(fig,plot_table,plot_table_opp,events,behavior)

@@ -72,6 +72,6 @@ if strcmp(perm,'yes')
     p_val = length(find(theta_new < theta))/1000 * 100;
 else
     p_val = NaN;
-    fprintf('No Pcal computed');
+    fprintf('No Pcal computed\n');
 end
 end
