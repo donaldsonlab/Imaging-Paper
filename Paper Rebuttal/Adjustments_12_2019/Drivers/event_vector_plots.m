@@ -65,7 +65,7 @@ for an = animals
                     plot_table_opp = small_table(small_index_opp,:);
                     
                     subplot(2,1,1)
-                    title('Partner Approach')
+                    title('Approach')
                     xlabel('X-Axis [pixels]')
                     ylabel('Y-Axis [pixels]')
                 case 'departure'
@@ -76,7 +76,7 @@ for an = animals
                     plot_table_opp = small_table(small_index_opp,:);
                     
                     subplot(2,1,2)
-                    title('Partner Departure')
+                    title('Departure')
                     xlabel('X-Axis [pixels]')
                     ylabel('Y-Axis [pixels]')
                 otherwise
@@ -112,23 +112,37 @@ for i = cell_list'
     cell_vec = events(:,i);
     [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
     vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
-    u = vector_data.after_vec(:,1);
-    v = vector_data.after_vec(:,2);
-    x = vector_data.event_loc(:,1);
-    y = vector_data.event_loc(:,2);
+    event_index = vector_data.event_index;
+    dist = behavior(event_index,17); %Partner
+    after_index = vector_data.after_index;
+    after_dist = behavior(after_index,17);
+    delta_dist = after_dist - dist;
+    index_app = find(delta_dist < 0);
+    index_dep = find(delta_dist > 0);
+    
+    u = vector_data.after_vec(index_app,1);
+    v = vector_data.after_vec(index_app,2);
+    x = vector_data.event_loc(index_app,1);
+    y = vector_data.event_loc(index_app,2);
+    quiver(x,y,u,v,'g')
+    
+    u = vector_data.after_vec(index_dep,1);
+    v = vector_data.after_vec(index_dep,2);
+    x = vector_data.event_loc(index_dep,1);
+    y = vector_data.event_loc(index_dep,2);
     quiver(x,y,u,v,'r')
 end
 
-%Now I need to build the opposite approach/departure data
-cell_list = plot_table_opp.Cell;
-for i = cell_list'
-    cell_vec = events(:,i);
-    [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
-    vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
-    u = vector_data.after_vec(:,1);
-    v = vector_data.after_vec(:,2);
-    x = vector_data.event_loc(:,1);
-    y = vector_data.event_loc(:,2);
-    quiver(x,y,u,v,'b')
-end
+% %Now I need to build the opposite approach/departure data
+% cell_list = plot_table_opp.Cell;
+% for i = cell_list'
+%     cell_vec = events(:,i);
+%     [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
+%     vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
+%     u = vector_data.after_vec(:,1);
+%     v = vector_data.after_vec(:,2);
+%     x = vector_data.event_loc(:,1);
+%     y = vector_data.event_loc(:,2);
+%     quiver(x,y,u,v,'b')
+% end
 end

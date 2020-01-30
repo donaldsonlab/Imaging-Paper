@@ -30,6 +30,9 @@ after_vec = after_loc - event_loc;
 vector_data.event_loc = event_loc;
 vector_data.before_vec = before_vec;
 vector_data.after_vec = after_vec;
+vector_data.event_index = event_index;
+vector_data.after_index = after_index;
+vector_data.before_index = before_index;
 
 %Find the angle with the dot product
 cos_theta = (dot(before_vec,after_vec,2))./(hypot(before_vec(:,1),before_vec(:,2)).*hypot(after_vec(:,1),after_vec(:,2)));
