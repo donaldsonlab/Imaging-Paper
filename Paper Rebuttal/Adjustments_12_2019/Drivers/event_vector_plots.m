@@ -31,6 +31,13 @@ for an = animals
         cd Functions
         %Pull the event and bvehavior data
         [events, behavior] = fileloop(an,ep);
+        switch animal_type
+            case 'Partner'
+                index = find(behavior(:,18) == 1);
+                events = events(index,:);
+                behavior = behavior(index,:);
+        end
+        
         events(:,1) = [];
         events(find(events > 0)) = 1;
         
@@ -83,7 +90,7 @@ for an = animals
                     error('No direction specified')
             end
 
-            %xlim([0 650])
+            xlim([400 700])
             hold on
             grid on
             plotVecs(fig,plot_table,plot_table_opp,events,behavior)
