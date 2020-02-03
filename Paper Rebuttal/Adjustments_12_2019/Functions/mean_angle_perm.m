@@ -51,7 +51,6 @@ if strcmp(perm,'yes')
         event_index_perm = find(cell_vec_perm);
         event_loc_perm = behavior(event_index_perm,9:10);
         
-        
         before_index_perm = event_index_perm - 5;
         before_index_perm(find(before_index_perm < 1)) = 1;
         before_loc_perm = behavior(before_index_perm,9:10);

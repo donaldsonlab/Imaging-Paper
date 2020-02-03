@@ -23,7 +23,7 @@ for an = animals
         [cells,behavior] = fileloop(an,ep);
         
         %Make the cells matrix only 0's and 1's
-        cells(:,1) = []; %Vector of times
+        %cells(:,1) = []; %Vector of times
         cells(find(cells > 0)) = 1; %Makes all events = 1
         num_cells = size(cells,2);
         %------------------------------------------------------------------

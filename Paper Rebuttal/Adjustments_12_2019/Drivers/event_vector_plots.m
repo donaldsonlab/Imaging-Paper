@@ -25,20 +25,26 @@ data_tab = loadtable(animal_type,'');
 data_tab_opp = loadtable(animal_type,'opposite');
 
 for an = animals
+    vole_num = sprintf('Vole %d',an);
+    cd .. 
+    cd('Vector Plots')
+    if ~exist(vole_num,'dir')
+        mkdir(vole_num)
+    end
     for ep = 1:3
-        
         cd ..
         cd Functions
-        %Pull the event and bvehavior data
+        %Pull the event and behavior data
         [events, behavior] = fileloop(an,ep);
+        times = events(:,1);
+        events(:,1) = [];
         switch animal_type
             case 'Partner'
                 index = find(behavior(:,18) == 1);
                 events = events(index,:);
                 behavior = behavior(index,:);
         end
-        
-        events(:,1) = [];
+        epoch = sprintf('Epoch %d',ep);
         events(find(events > 0)) = 1;
         
         %Reduce the size of the angle table to the right animal and epoch
@@ -61,40 +67,66 @@ for an = animals
         small_data = small_data(small_index,:);
         small_data_opp = small_data_opp(small_index,:);
         
-        fig = figure;
         for direction_type = ["approach","departure"]
             switch direction_type
                 case 'approach'
                     small_index = find(small_data.P_val <= 10);
+                    %Plot table is narrowed down by animal, epoch, number
+                    %of events, partner chamber, and now Pvalue.
                     plot_table = small_table(small_index,:);
                     
                     small_index_opp = find(small_data_opp.P_val <= 10);
                     plot_table_opp = small_table(small_index_opp,:);
                     
-                    subplot(2,1,1)
-                    title('Approach')
-                    xlabel('X-Axis [pixels]')
-                    ylabel('Y-Axis [pixels]')
+                    num_cells = length(plot_table.Cell);
+                    count = 1;
+                    for j = 1:num_cells
+                        fig = figure(count);
+                        count = count + 1;
+                        subplot(2,1,1)
+                        xlim([400 700])
+                        title('Approach')
+                        xlabel('X-Axis [pixels]')
+                        ylabel('Y-Axis [pixels]')
+                        xlim([400 700])
+                        hold on
+                        grid on
+                        plotVecs(fig,plot_table,plot_table_opp,events,behavior,j)
+                    end
                 case 'departure'
                     small_index = find(small_data.P_val >= 90);
                     plot_table = small_table(small_index,:);
                     
                     small_index_opp = find(small_data_opp.P_val >= 90);
                     plot_table_opp = small_table(small_index_opp,:);
-                    
-                    subplot(2,1,2)
-                    title('Departure')
-                    xlabel('X-Axis [pixels]')
-                    ylabel('Y-Axis [pixels]')
+                    num_cells = length(plot_table.Cell);
+                    count = 1;
+                    for j = 1:num_cells
+                        figure(count);
+                        count = count + 1;
+                        subplot(2,1,2)
+                        title('Departure')
+                        xlabel('X-Axis [pixels]')
+                        ylabel('Y-Axis [pixels]')
+                        xlim([400 700])
+                        hold on
+                        grid on
+                        plotVecs(fig,plot_table,plot_table_opp,events,behavior,j)
+                    end
                 otherwise
                     error('No direction specified')
             end
-
-            xlim([400 700])
-            hold on
-            grid on
-            plotVecs(fig,plot_table,plot_table_opp,events,behavior)
         end
+        cd ..
+        cd('Vector Plots')
+        cd(vole_num)
+        if ~exist(epoch,'dir')
+            mkdir(epoch)
+        end
+        filename = sprintf('Cell');
+        %saveas(fig, 
+        cd ..
+        cd ..
     end
 end
 
@@ -111,35 +143,31 @@ data_tab = data_cell{1};
 data_tab.Var4 = [];
 end
 
-function [] = plotVecs(fig,plot_table,plot_table_opp,events,behavior)
+function [] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val)
 figure(fig)
 %set(fig,'Visible','off')
-cell_list = plot_table.Cell;
-for i = cell_list'
-    cell_vec = events(:,i);
-    [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
-    vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
-    event_index = vector_data.event_index;
-    dist = behavior(event_index,17); %Partner
-    after_index = vector_data.after_index;
-    after_dist = behavior(after_index,17);
-    delta_dist = after_dist - dist;
-    index_app = find(delta_dist < 0);
-    index_dep = find(delta_dist > 0);
-    
-    u = vector_data.after_vec(index_app,1);
-    v = vector_data.after_vec(index_app,2);
-    x = vector_data.event_loc(index_app,1);
-    y = vector_data.event_loc(index_app,2);
-    quiver(x,y,u,v,'g')
-    
-    u = vector_data.after_vec(index_dep,1);
-    v = vector_data.after_vec(index_dep,2);
-    x = vector_data.event_loc(index_dep,1);
-    y = vector_data.event_loc(index_dep,2);
-    quiver(x,y,u,v,'r')
-end
+cell_vec = events(:,cell_val); %Right now events is only specific to the partner or novel chamber, animal and epoch,
+[~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no'); %Specific to partner chamber
+%vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
+event_index = vector_data.event_index;
+dist = behavior(event_index,17); %Partner
+after_index = vector_data.after_index;
+after_dist = behavior(after_index,17);
+delta_dist = after_dist - dist;
+index_app = find(delta_dist < 0);
+index_dep = find(delta_dist > 0);
 
+u = vector_data.after_vec(index_app,1);
+v = vector_data.after_vec(index_app,2);
+x = vector_data.event_loc(index_app,1);
+y = vector_data.event_loc(index_app,2);
+quiver(x,y,u,v,'g')
+
+u = vector_data.after_vec(index_dep,1);
+v = vector_data.after_vec(index_dep,2);
+x = vector_data.event_loc(index_dep,1);
+y = vector_data.event_loc(index_dep,2);
+quiver(x,y,u,v,'r')
 % %Now I need to build the opposite approach/departure data
 % cell_list = plot_table_opp.Cell;
 % for i = cell_list'
