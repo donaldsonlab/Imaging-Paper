@@ -13,6 +13,7 @@ clearvars; close all; clc;
 
 animals = [440 445 451 485 487 532 535 543 546 557 570 573 584 585 586 588 598 599];
 cd ..
+addpath('Functions')
 cd Overlaps
 load('angle_distance_table_all.mat')
 
@@ -31,9 +32,8 @@ for an = animals
     if ~exist(vole_num,'dir')
         mkdir(vole_num)
     end
+    cd(vole_num)
     for ep = 1:3
-        cd ..
-        cd Functions
         %Pull the event and behavior data
         [events, behavior] = fileloop(an,ep);
         times = events(:,1);
@@ -66,7 +66,10 @@ for an = animals
         small_table = small_table(small_index,:);
         small_data = small_data(small_index,:);
         small_data_opp = small_data_opp(small_index,:);
-        
+        if ~exist(epoch,'dir')
+            mkdir(epoch)
+        end
+        cd(epoch)
         for direction_type = ["approach","departure"]
             switch direction_type
                 case 'approach'
@@ -78,20 +81,20 @@ for an = animals
                     small_index_opp = find(small_data_opp.P_val <= 10);
                     plot_table_opp = small_table(small_index_opp,:);
                     
-                    num_cells = length(plot_table.Cell);
-                    count = 1;
-                    for j = 1:num_cells
-                        fig = figure(count);
-                        count = count + 1;
-                        subplot(2,1,1)
-                        xlim([400 700])
-                        title('Approach')
-                        xlabel('X-Axis [pixels]')
-                        ylabel('Y-Axis [pixels]')
-                        xlim([400 700])
-                        hold on
-                        grid on
-                        plotVecs(fig,plot_table,plot_table_opp,events,behavior,j)
+                    cells = plot_table.Cell;
+                    if ~isempty(cells)
+                        for j = cells'
+                            fig = figure('Visible','off');
+                            title('Approach')
+                            xlabel('X-Axis [pixels]')
+                            ylabel('Y-Axis [pixels]')
+                            xlim([400 700])
+                            hold on
+                            grid on
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events,behavior,j);
+                            saveas(fig,sprintf('Cell_%d_Approach.png',j));
+                            close(fig)
+                        end
                     end
                 case 'departure'
                     small_index = find(small_data.P_val >= 90);
@@ -99,35 +102,27 @@ for an = animals
                     
                     small_index_opp = find(small_data_opp.P_val >= 90);
                     plot_table_opp = small_table(small_index_opp,:);
-                    num_cells = length(plot_table.Cell);
-                    count = 1;
-                    for j = 1:num_cells
-                        figure(count);
-                        count = count + 1;
-                        subplot(2,1,2)
-                        title('Departure')
-                        xlabel('X-Axis [pixels]')
-                        ylabel('Y-Axis [pixels]')
-                        xlim([400 700])
-                        hold on
-                        grid on
-                        plotVecs(fig,plot_table,plot_table_opp,events,behavior,j)
+                    cells = plot_table.Cell;
+                    if ~isempty(cells)
+                        for j = cells'
+                            fig = figure('Visible','off');
+                            title('Departure')
+                            xlabel('X-Axis [pixels]')
+                            ylabel('Y-Axis [pixels]')
+                            hold on
+                            grid on
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events,behavior,j);
+                            saveas(fig,sprintf('Cell_%d_Departure.png',j));
+                            close(fig)
+                        end
                     end
                 otherwise
                     error('No direction specified')
             end
         end
         cd ..
-        cd('Vector Plots')
-        cd(vole_num)
-        if ~exist(epoch,'dir')
-            mkdir(epoch)
-        end
-        filename = sprintf('Cell');
-        %saveas(fig, 
-        cd ..
-        cd ..
     end
+    cd ..
 end
 
 function [data_tab]= loadtable(animal_type, chamber_type)
@@ -143,7 +138,7 @@ data_tab = data_cell{1};
 data_tab.Var4 = [];
 end
 
-function [] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val)
+function [fig] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val)
 figure(fig)
 %set(fig,'Visible','off')
 cell_vec = events(:,cell_val); %Right now events is only specific to the partner or novel chamber, animal and epoch,
