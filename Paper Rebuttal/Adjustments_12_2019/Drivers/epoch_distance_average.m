@@ -86,7 +86,9 @@ for an = animals
     end
 end
 approach_table.Properties.VariableNames = VariNames;
+writetable(approach_table,'Distance_Total_Data/approach_table.xlsx')
 departure_table.Properties.VariableNames = VariNames;
+writetable(departure_table,'Distance_Total_Data/departure_table.xlsx')
 
 function [out] = meanNan(vec)
 index = find(isnan(vec));
