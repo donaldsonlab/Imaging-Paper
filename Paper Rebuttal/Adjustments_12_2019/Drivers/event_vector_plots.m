@@ -38,14 +38,19 @@ for an = animals
         [events, behavior] = fileloop(an,ep);
         times = events(:,1);
         events(:,1) = [];
-        switch animal_type
-            case 'Partner'
-                index = find(behavior(:,18) == 1);
-                events = events(index,:);
-                behavior = behavior(index,:);
-        end
+        
+        %Identify partner events
+        index = find(behavior(:,18) == 1);
+        events_p = events(index,:);
+        behavior_p = behavior(index,:);
+        events_p(find(events_p > 0)) = 1;
+        %Identify novel events
+        index = find(behavior(:,20) == 1);
+        events_n = events(index,:);
+        behavior_n = behavior(index,:);
+        events_n(find(events_n > 0)) = 1;
+        
         epoch = sprintf('Epoch %d',ep);
-        events(find(events > 0)) = 1;
         
         %Reduce the size of the angle table to the right animal and epoch
         small_index = find(angle_distance_table_all.Animal == an & angle_distance_table_all.Epoch == ep);
@@ -62,7 +67,7 @@ for an = animals
         end
         
         %Only plot cells with greater than 5 events and less than 15
-        small_index = find(small_table.Number_events >=5 & small_table.Number_events <= 15);
+        small_index = find(small_table.Number_events >=5);% & small_table.Number_events <= 15);
         small_table = small_table(small_index,:);
         small_data = small_data(small_index,:);
         small_data_opp = small_data_opp(small_index,:);
@@ -88,10 +93,11 @@ for an = animals
                             title('Approach')
                             xlabel('X-Axis [pixels]')
                             ylabel('Y-Axis [pixels]')
-                            xlim([400 700])
+                            %xlim([400 700])
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events,behavior,j);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r',);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_n,behavior_n,j,'g');
                             saveas(fig,sprintf('Cell_%d_Approach.png',j));
                             close(fig)
                         end
@@ -111,7 +117,8 @@ for an = animals
                             ylabel('Y-Axis [pixels]')
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events,behavior,j);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_n,behavior_n,j,'g');
                             saveas(fig,sprintf('Cell_%d_Departure.png',j));
                             close(fig)
                         end
@@ -138,8 +145,8 @@ data_tab = data_cell{1};
 data_tab.Var4 = [];
 end
 
-function [fig] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val)
-figure(fig)
+function [fig] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val,color)
+%figure(fig)
 %set(fig,'Visible','off')
 cell_vec = events(:,cell_val); %Right now events is only specific to the partner or novel chamber, animal and epoch,
 [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no'); %Specific to partner chamber
@@ -156,13 +163,13 @@ u = vector_data.after_vec(index_app,1);
 v = vector_data.after_vec(index_app,2);
 x = vector_data.event_loc(index_app,1);
 y = vector_data.event_loc(index_app,2);
-quiver(x,y,u,v,'g')
+quiver(x,y,u,v,color)
 
 u = vector_data.after_vec(index_dep,1);
 v = vector_data.after_vec(index_dep,2);
 x = vector_data.event_loc(index_dep,1);
 y = vector_data.event_loc(index_dep,2);
-quiver(x,y,u,v,'r')
+quiver(x,y,u,v,color)
 % %Now I need to build the opposite approach/departure data
 % cell_list = plot_table_opp.Cell;
 % for i = cell_list'
