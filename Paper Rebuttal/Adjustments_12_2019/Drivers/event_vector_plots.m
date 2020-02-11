@@ -49,6 +49,11 @@ for an = animals
         events_n = events(index,:);
         behavior_n = behavior(index,:);
         events_n(find(events_n > 0)) = 1;
+        %Identify unregistered events
+        index = find(behavior(:,19 == 1));
+        events_c = events(index,:);
+        behavior_c = behavior(index,:);
+        events_c(find(events_c > 1)) = 1;
         
         epoch = sprintf('Epoch %d',ep);
         
@@ -96,8 +101,9 @@ for an = animals
                             %xlim([400 700])
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r',);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r');
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_n,behavior_n,j,'g');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.25 0.25 0.25]);
                             saveas(fig,sprintf('Cell_%d_Approach.png',j));
                             close(fig)
                         end
@@ -119,6 +125,7 @@ for an = animals
                             grid on
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r');
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_n,behavior_n,j,'g');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.25 0.25 0.25]);
                             saveas(fig,sprintf('Cell_%d_Departure.png',j));
                             close(fig)
                         end
@@ -163,13 +170,13 @@ u = vector_data.after_vec(index_app,1);
 v = vector_data.after_vec(index_app,2);
 x = vector_data.event_loc(index_app,1);
 y = vector_data.event_loc(index_app,2);
-quiver(x,y,u,v,color)
+quiver(x,y,u,v,'Color',color)
 
 u = vector_data.after_vec(index_dep,1);
 v = vector_data.after_vec(index_dep,2);
 x = vector_data.event_loc(index_dep,1);
 y = vector_data.event_loc(index_dep,2);
-quiver(x,y,u,v,color)
+quiver(x,y,u,v,'Color',color)
 % %Now I need to build the opposite approach/departure data
 % cell_list = plot_table_opp.Cell;
 % for i = cell_list'
