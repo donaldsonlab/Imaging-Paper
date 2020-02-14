@@ -24,11 +24,12 @@ animal_type = 'Partner';
 chamber_type = ''; %OR 'opposite'
 data_tab = loadtable(animal_type,'');
 data_tab_opp = loadtable(animal_type,'opposite');
+cd ..
+cd('Vector Plots')
+cd(animal_type)
 
 for an = animals
     vole_num = sprintf('Vole %d',an);
-    cd .. 
-    cd('Vector Plots')
     if ~exist(vole_num,'dir')
         mkdir(vole_num)
     end
@@ -41,16 +42,16 @@ for an = animals
         
         %Identify partner events
         index = find(behavior(:,18) == 1);
-        events_p = events(index,:);
-        behavior_p = behavior(index,:);
-        events_p(find(events_p > 0)) = 1;
-        %Identify novel events
-        index = find(behavior(:,20) == 1);
-        events_n = events(index,:);
-        behavior_n = behavior(index,:);
-        events_n(find(events_n > 0)) = 1;
+        events_use = events(index,:);
+        behavior_use = behavior(index,:);
+        events_use(find(events_use > 0)) = 1;
+%         %Identify novel events
+%         index = find(behavior(:,20) == 1);
+%         events_use = events(index,:);
+%         behavior_use = behavior(index,:);
+%         events_use(find(events_use > 0)) = 1;
         %Identify unregistered events
-        index = find(behavior(:,19 == 1));
+        index = find(behavior(:,19) == 1 | behavior(:,20) == 1);
         events_c = events(index,:);
         behavior_c = behavior(index,:);
         events_c(find(events_c > 1)) = 1;
@@ -101,10 +102,9 @@ for an = animals
                             %xlim([400 700])
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r');
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_n,behavior_n,j,'g');
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.25 0.25 0.25]);
-                            saveas(fig,sprintf('Cell_%d_Approach.png',j));
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'r');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5]);
+                            saveas(fig,sprintf('Cell_%d_Approach',j));
                             close(fig)
                         end
                     end
@@ -123,10 +123,9 @@ for an = animals
                             ylabel('Y-Axis [pixels]')
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_p,behavior_p,j,'r');
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_n,behavior_n,j,'g');
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.25 0.25 0.25]);
-                            saveas(fig,sprintf('Cell_%d_Departure.png',j));
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'r');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
+                            saveas(fig,sprintf('Cell_%d_Departure',j));
                             close(fig)
                         end
                     end
