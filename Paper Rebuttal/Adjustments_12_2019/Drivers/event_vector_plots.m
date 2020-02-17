@@ -20,10 +20,17 @@ load('angle_distance_table_all.mat')
 cd ..
 cd Data_No_Check
 
-animal_type = 'Partner';
+animal_type = 'Neither';
 chamber_type = ''; %OR 'opposite'
-data_tab = loadtable(animal_type,'');
-data_tab_opp = loadtable(animal_type,'opposite');
+if animal_type == 'Neither'
+    data_tab = loadtable('Partner','');
+    data_tab_opp = loadtable('Partner','opposite');
+else
+    data_tab = loadtable(animal_type,'');
+    data_tab_opp = loadtable(animal_type,'opposite');
+end
+% data_tab = loadtable(animal_type,'');
+% data_tab_opp = loadtable(animal_type,'opposite');
 cd ..
 cd('Vector Plots')
 cd(animal_type)
@@ -81,7 +88,7 @@ for an = animals
             mkdir(epoch)
         end
         cd(epoch)
-        for direction_type = ["approach","departure"]
+        for direction_type = "neutral"%["approach","departure"]
             switch direction_type
                 case 'approach'
                     small_index = find(small_data.P_val <= 10);
@@ -97,12 +104,14 @@ for an = animals
                         for j = cells'
                             fig = figure('Visible','off');
                             title('Approach')
-                            xlabel('X-Axis [pixels]')
-                            ylabel('Y-Axis [pixels]')
                             %xlim([400 700])
+                            xticks([])
+                            xticklabels({})
+                            yticks([])
+                            yticklabels({})
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'r');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[255 127 0]/255);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5]);
                             saveas(fig,sprintf('Cell_%d_Approach',j));
                             close(fig)
@@ -119,18 +128,42 @@ for an = animals
                         for j = cells'
                             fig = figure('Visible','off');
                             title('Departure')
-                            xlabel('X-Axis [pixels]')
-                            ylabel('Y-Axis [pixels]')
+                            xticks([])
+                            xticklabels({})
+                            yticks([])
+                            yticklabels({})
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'r');
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'g');
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
                             saveas(fig,sprintf('Cell_%d_Departure',j));
                             close(fig)
                         end
                     end
                 otherwise
-                    error('No direction specified')
+                    warning('No direction specified')
+                    small_index = find(small_data.P_val < 90 & small_data.P_val > 10);
+                    plot_table = small_table(small_index,:);
+                    
+                    small_index_opp = find(small_data.P_val < 90 & small_data.P_val > 10);
+                    plot_table_opp = small_table(small_index_opp,:);
+                    cells = plot_table.Cell;
+                    if ~isempty(cells)
+                        for j = cells'
+                            fig = figure('Visible','off');
+                            title('Neutral')
+                            xticks([])
+                            xticklabels({})
+                            yticks([])
+                            yticklabels({})
+                            hold on
+                            grid on
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[0.5 0.5 0.5]);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
+                            saveas(fig,sprintf('Cell_%d_Neutral',j));
+                            close(fig)
+                        end
+                    end
             end
         end
         cd ..
