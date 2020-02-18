@@ -20,7 +20,7 @@ load('angle_distance_table_all.mat')
 cd ..
 cd Data_No_Check
 
-animal_type = 'Neither';
+animal_type = 'Partner';
 chamber_type = ''; %OR 'opposite'
 if animal_type == 'Neither'
     data_tab = loadtable('Partner','');
@@ -46,7 +46,12 @@ for an = animals
         [events, behavior] = fileloop(an,ep);
         times = events(:,1);
         events(:,1) = [];
-        
+        if string(animal_type) == "Partner"
+            tethered_trace = behavior(:,[3,4]);
+        end
+        if string(animal_type) == "Novel"
+            tethered_trace = behavior(:,[6,7]);
+        end
         %Identify partner events
         index = find(behavior(:,18) == 1);
         events_use = events(index,:);
@@ -88,7 +93,7 @@ for an = animals
             mkdir(epoch)
         end
         cd(epoch)
-        for direction_type = "neutral"%["approach","departure"]
+        for direction_type = ["approach","departure"]
             switch direction_type
                 case 'approach'
                     small_index = find(small_data.P_val <= 10);
@@ -111,8 +116,11 @@ for an = animals
                             yticklabels({})
                             hold on
                             grid on
+%                             scatter(tethered_trace(:,1),tethered_trace(:,2),'b.','MarkerFaceAlpha',0.2,'MarkerEdgeAlpha',0.2);
+                            fig = heatscatter(fig,tethered_trace(:,1),tethered_trace(:,2),[],[],'.',[],0,[],[],[]);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[255 127 0]/255);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5]);
+                            fig.Visible = 'on';
                             saveas(fig,sprintf('Cell_%d_Approach',j));
                             close(fig)
                         end
@@ -136,6 +144,7 @@ for an = animals
                             grid on
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'g');
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
+                            plot(tethered_trace(:,1),tethered_trace(:,2),'b')
                             saveas(fig,sprintf('Cell_%d_Departure',j));
                             close(fig)
                         end
@@ -160,6 +169,7 @@ for an = animals
                             grid on
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[0.5 0.5 0.5]);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
+                            plot(tethered_trace(:,1),tethered_trace(:,2),'b')
                             saveas(fig,sprintf('Cell_%d_Neutral',j));
                             close(fig)
                         end
