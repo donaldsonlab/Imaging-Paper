@@ -117,9 +117,10 @@ for an = animals
                             hold on
                             grid on
 %                             scatter(tethered_trace(:,1),tethered_trace(:,2),'b.','MarkerFaceAlpha',0.2,'MarkerEdgeAlpha',0.2);
-                            fig = heatscatter(fig,tethered_trace(:,1),tethered_trace(:,2),[],[],'.',[],0,[],[],[]);
+                            %fig = heatscatter(fig,tethered_trace(:,1),tethered_trace(:,2),[],[],'.',[],0,[],[],[]);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[255 127 0]/255);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5]);
+                            fig = concentrations(fig,tethered_trace(:,1),tethered_trace(:,2));
                             fig.Visible = 'on';
                             saveas(fig,sprintf('Cell_%d_Approach',j));
                             close(fig)
@@ -219,16 +220,68 @@ v = vector_data.after_vec(index_dep,2);
 x = vector_data.event_loc(index_dep,1);
 y = vector_data.event_loc(index_dep,2);
 quiver(x,y,u,v,'Color',color)
-% %Now I need to build the opposite approach/departure data
-% cell_list = plot_table_opp.Cell;
-% for i = cell_list'
-%     cell_vec = events(:,i);
-%     [~,~,vector_data] = mean_angle_perm(cell_vec,behavior,'no');
-%     vector_data.after_vec = vector_data.after_vec./norm(vector_data.after_vec);
-%     u = vector_data.after_vec(:,1);
-%     v = vector_data.after_vec(:,2);
-%     x = vector_data.event_loc(:,1);
-%     y = vector_data.event_loc(:,2);
-%     quiver(x,y,u,v,'b')
-% end
 end
+
+function fig = concentrations(fig,x_pos,y_pos)
+cmap = colormap(hot);
+index = find(cmap(:,1) == 1 & cmap(:,2) == 1 & cmap(:,3) == 0);
+cmap(index:end,:) = [];
+
+%Find the concentration of positions
+bins = [100 100];
+[N,centers] = hist3([x_pos,y_pos],'Nbins',bins);
+%[edgeMat,~] = edgeFind(N);
+no_conc = find(N == 0);
+
+%Assign the concentrations in N 
+max_norm = max(max(N));
+norm_mat = N./max_norm;
+norm_mat = 1 - norm_mat;
+ind_mat = ceil(norm_mat.*(length(cmap)));
+ind_mat(find(ind_mat == 0)) = 1;
+ind_mat(no_conc) = 0;
+
+image = zeros([size(N), 3]); %Create a 3 layer rgb matrix
+%Now assign values for each pixel in the image
+index = find(ind_mat == 0);
+%Assign the no data values to white
+layer = zeros(bins);
+layer(index) = 1;
+image(:,:,1) = layer;
+image(:,:,2) = layer;
+image(:,:,3) = layer;
+
+[indx,indy] = find(ind_mat);
+for i = 1:length(indx)
+    x = indx(i);
+    y = indy(i);
+    ind_val = ind_mat(x,y);
+    for j = 1:3
+        image(x,y,j) = cmap(ind_val,j);
+    end
+end
+% %Make the meshgrid
+% x_vec = linspace(min(x_pos),max(x_pos),bins(1));
+% y_vec = linspace(min(y_pos),max(y_pos),bins(1));
+% [X,Y] = meshgrid(x_vec,y_vec);
+% 
+% %make the pcolor plot
+% pcolor(X,Y,ind_mat);
+% %shading interp
+% colormap(cmap)
+
+%Need to shift image to where its supposed to be on the plot
+%First resize the image
+xlims = [min(x_pos) max(x_pos)];
+ylims = [min(y_pos) max(y_pos)];
+image = imresize(image, [1000 1000]);
+% figure
+% imagesc(image)
+
+%Now position the picture on the plot
+%axes('pos',[min(x_pos) min(y_pos) xlims(2)-xlims(1) ylims(2)-ylims(1)]);
+%axes('pos',[.1 .6 .5 .3]);
+imshow(image);
+fig.Visible = 'on'
+end
+
