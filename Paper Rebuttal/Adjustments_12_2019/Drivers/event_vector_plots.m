@@ -118,8 +118,8 @@ for an = animals
                             grid on
 %                             scatter(tethered_trace(:,1),tethered_trace(:,2),'b.','MarkerFaceAlpha',0.2,'MarkerEdgeAlpha',0.2);
                             %fig = heatscatter(fig,tethered_trace(:,1),tethered_trace(:,2),[],[],'.',[],0,[],[],[]);
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[255 127 0]/255);
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5]);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5],1.0);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[255 127 0]/255,2.0);
                             fig = concentrations(fig,tethered_trace(:,1),tethered_trace(:,2));
                             fig.Visible = 'on';
                             saveas(fig,sprintf('Cell_%d_Approach',j));
@@ -195,7 +195,7 @@ data_tab = data_cell{1};
 data_tab.Var4 = [];
 end
 
-function [fig] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val,color)
+function [fig] = plotVecs(fig,plot_table,plot_table_opp,events,behavior,cell_val,color,lw)
 %figure(fig)
 %set(fig,'Visible','off')
 cell_vec = events(:,cell_val); %Right now events is only specific to the partner or novel chamber, animal and epoch,
@@ -209,28 +209,40 @@ delta_dist = after_dist - dist;
 index_app = find(delta_dist < 0);
 index_dep = find(delta_dist > 0);
 
-u = vector_data.after_vec(index_app,1);
-v = vector_data.after_vec(index_app,2);
-x = vector_data.event_loc(index_app,1);
-y = vector_data.event_loc(index_app,2);
-quiver(x,y,u,v,'Color',color)
+% u = vector_data.after_vec(index_app,1);
+% v = vector_data.after_vec(index_app,2);
+% x = vector_data.event_loc(index_app,1);
+% y = vector_data.event_loc(index_app,2);
+% quiver(x,y,u,v,'Color',color)
+% 
+% u = vector_data.after_vec(index_dep,1);
+% v = vector_data.after_vec(index_dep,2);
+% x = vector_data.event_loc(index_dep,1);
+% y = vector_data.event_loc(index_dep,2);
+% quiver(x,y,u,v,'Color',color)
 
-u = vector_data.after_vec(index_dep,1);
-v = vector_data.after_vec(index_dep,2);
-x = vector_data.event_loc(index_dep,1);
-y = vector_data.event_loc(index_dep,2);
-quiver(x,y,u,v,'Color',color)
+u = vector_data.after_vec(:,1);
+v = vector_data.after_vec(:,2);
+x = vector_data.event_loc(:,1);
+y = vector_data.event_loc(:,2);
+quiver(x,y,u,v,'Color',color,'LineWidth',lw)
 end
 
 function fig = concentrations(fig,x_pos,y_pos)
 cmap = colormap(hot);
 index = find(cmap(:,1) == 1 & cmap(:,2) == 1 & cmap(:,3) == 0);
 cmap(index:end,:) = [];
+index = find(cmap(:,1) == 1 & cmap(:,2) == 0 & cmap(:,3) == 0);
+cmap(1:index,:) = [];
 
 %Find the concentration of positions
-bins = [100 100];
+bins = [20 20];
 [N,centers] = hist3([x_pos,y_pos],'Nbins',bins);
 %[edgeMat,~] = edgeFind(N);
+ypad = zeros(size(N,2),round(size(N,1)/4));
+xpad = zeros(round(size(N,1)/4),size(N,2)+2*size(ypad,2));
+N = [ypad,N,ypad];
+N = [xpad;N;xpad];
 no_conc = find(N == 0);
 
 %Assign the concentrations in N 
@@ -245,7 +257,7 @@ image = zeros([size(N), 3]); %Create a 3 layer rgb matrix
 %Now assign values for each pixel in the image
 index = find(ind_mat == 0);
 %Assign the no data values to white
-layer = zeros(bins);
+layer = zeros(size(N,1));
 layer(index) = 1;
 image(:,:,1) = layer;
 image(:,:,2) = layer;
@@ -274,14 +286,32 @@ end
 %First resize the image
 xlims = [min(x_pos) max(x_pos)];
 ylims = [min(y_pos) max(y_pos)];
-image = imresize(image, [1000 1000]);
+image = imresize(image, [250 250]);
+image = imgaussfilt(image,3.25);
 % figure
 % imagesc(image)
+xlim([0 800])
+ylim([0 400])
 
 %Now position the picture on the plot
 %axes('pos',[min(x_pos) min(y_pos) xlims(2)-xlims(1) ylims(2)-ylims(1)]);
 %axes('pos',[.1 .6 .5 .3]);
+%Convert plot data points to figure position
+old_axes = fig.Children;
+figPos = ds2nfu([xlims(1) ylims(1) xlims(2)-xlims(1) ylims(2)-ylims(1)]);
+new_ax = axes('pos',figPos);
 imshow(image);
-fig.Visible = 'on'
+new_ax.YDir = 'normal';
+set(new_ax,'color','none')
+
+%reassign the figure
+new_fig = figure('Visible','off');
+new_ax.Parent = new_fig;
+old_axes.Parent = new_fig;
+old_axes.Color = 'none';
+close(fig)
+clear fig
+fig = new_fig;
+fig.Color = 'w';
 end
 
