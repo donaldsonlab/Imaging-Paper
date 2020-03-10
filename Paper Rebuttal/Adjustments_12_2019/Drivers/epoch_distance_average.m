@@ -2,6 +2,10 @@
 %Created: 2/4/2020
 %Edited:  2/7/2020
 %--------------------------------------------------------------------------
+%This script finds the average distance change of the test animal,
+%independent of the chamber it is in or when events occur, per animal per
+%epoch.
+%--------------------------------------------------------------------------
 
 clearvars; close all; clc;
 

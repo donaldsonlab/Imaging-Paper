@@ -5,7 +5,7 @@ clearvars;close all;clc;
 
 name = 'Cell_445_1_5_Departure';
 xend = [93 678];
-yend = [155 330];
+yend = [155 380];
 lwall = 288;
 rwall = 483;
 aspectratio = 1.2;
@@ -33,6 +33,7 @@ lry = [yend(1),yend(1)+range];
 urx = [rwall rwall];
 ury = [yend(2)-range,yend(2)];
 
+hold on
 plot(llx,lly,'k','LineWidth',lwidth);
 plot(ulx,uly,'k','LineWidth',lwidth);
 plot(lrx,lry,'k','LineWidth',lwidth);

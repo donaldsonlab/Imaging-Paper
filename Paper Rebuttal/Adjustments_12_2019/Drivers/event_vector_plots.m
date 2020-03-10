@@ -20,9 +20,11 @@ load('angle_distance_table_all.mat')
 cd ..
 cd Data_No_Check
 
-animal_type = 'Partner';
+animal_type = 'Neither';
+partnerColor = [255 20 147]/255; %'b'
+novelColor = 'b';
 chamber_type = ''; %OR 'opposite'
-if animal_type == 'Neither'
+if string(animal_type) == "Neither"
     data_tab = loadtable('Partner','');
     data_tab_opp = loadtable('Partner','opposite');
 else
@@ -46,24 +48,20 @@ for an = animals
         [events, behavior] = fileloop(an,ep);
         times = events(:,1);
         events(:,1) = [];
-        if string(animal_type) == "Partner"
-            tethered_trace = behavior(:,[3,4]);
-        end
-        if string(animal_type) == "Novel"
-            tethered_trace = behavior(:,[6,7]);
-        end
-        %Identify partner events
-        index = find(behavior(:,18) == 1);
-        events_use = events(index,:);
-        behavior_use = behavior(index,:);
-        events_use(find(events_use > 0)) = 1;
-%         %Identify novel events
-%         index = find(behavior(:,20) == 1);
+        tethered_trace_partner = behavior(:,[3,4]);
+        tethered_trace_novel = behavior(:,[6,7]);
+%         %Identify partner events
+%         index = find(behavior(:,18) == 1);
 %         events_use = events(index,:);
 %         behavior_use = behavior(index,:);
 %         events_use(find(events_use > 0)) = 1;
+        %Identify novel events
+        index = find(behavior(:,20) == 1);
+        events_use = events(index,:);
+        behavior_use = behavior(index,:);
+        events_use(find(events_use > 0)) = 1;
         %Identify unregistered events
-        index = find(behavior(:,19) == 1 | behavior(:,20) == 1);
+        index = find(behavior(:,19) == 1 | behavior(:,18) == 1);
         events_c = events(index,:);
         behavior_c = behavior(index,:);
         events_c(find(events_c > 1)) = 1;
@@ -93,7 +91,7 @@ for an = animals
             mkdir(epoch)
         end
         cd(epoch)
-        for direction_type = ["approach","departure"]
+        for direction_type = "neither"%["approach","departure"]
             switch direction_type
                 case 'approach'
                     small_index = find(small_data.P_val <= 10);
@@ -116,13 +114,17 @@ for an = animals
                             yticklabels({})
                             hold on
                             grid on
-%                             scatter(tethered_trace(:,1),tethered_trace(:,2),'b.','MarkerFaceAlpha',0.2,'MarkerEdgeAlpha',0.2);
+                            scatter(tethered_trace_partner(:,1),tethered_trace_partner(:,2),2000,'.','MarkerFaceAlpha',0.1,'MarkerEdgeAlpha',0.1,...
+                                'MarkerFaceColor',partnerColor,'MarkerEdgeColor',partnerColor);
+                            scatter(tethered_trace_novel(:,1),tethered_trace_novel(:,2),2000,'.','MarkerFaceAlpha',0.1,'MarkerEdgeAlpha',0.1,...
+                                'MarkerFaceColor',novelColor,'MarkerEdgeColor',novelColor);
                             %fig = heatscatter(fig,tethered_trace(:,1),tethered_trace(:,2),[],[],'.',[],0,[],[],[]);
                             fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5],1.0);
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[255 127 0]/255,2.0);
-                            fig = concentrations(fig,tethered_trace(:,1),tethered_trace(:,2));
-                            fig.Visible = 'on';
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'k',2.0); %[255 127 0]/255
+                            %fig = concentrations(fig,tethered_trace(:,1),tethered_trace(:,2));
+                            %fig.Visible = 'on';
                             saveas(fig,sprintf('Cell_%d_Approach',j));
+                            saveas(fig,sprintf('Cell_%d_Approach.png',j));
                             close(fig)
                         end
                     end
@@ -143,10 +145,15 @@ for an = animals
                             yticklabels({})
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'g');
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
-                            plot(tethered_trace(:,1),tethered_trace(:,2),'b')
+                            scatter(tethered_trace_partner(:,1),tethered_trace_partner(:,2),2000,'.','MarkerFaceAlpha',0.1,'MarkerEdgeAlpha',0.1,...
+                                'MarkerFaceColor',partnerColor,'MarkerEdgeColor',partnerColor);
+                            scatter(tethered_trace_novel(:,1),tethered_trace_novel(:,2),2000,'.','MarkerFaceAlpha',0.1,'MarkerEdgeAlpha',0.1,...
+                                'MarkerFaceColor',novelColor,'MarkerEdgeColor',novelColor);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[.5 0.5 0.5],1.0);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,'k',2.0);%'g'
+                            %fig = concentrations(fig,tethered_trace(:,1),tethered_trace(:,2));
                             saveas(fig,sprintf('Cell_%d_Departure',j));
+                            saveas(fig,sprintf('Cell_%d_Departure.png',j));
                             close(fig)
                         end
                     end
@@ -168,15 +175,20 @@ for an = animals
                             yticklabels({})
                             hold on
                             grid on
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[0.5 0.5 0.5]);
-                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5]);
-                            plot(tethered_trace(:,1),tethered_trace(:,2),'b')
+                            scatter(tethered_trace_partner(:,1),tethered_trace_partner(:,2),2000,'.','MarkerFaceAlpha',0.1,'MarkerEdgeAlpha',0.1,...
+                                'MarkerFaceColor',partnerColor,'MarkerEdgeColor',partnerColor);
+                            scatter(tethered_trace_novel(:,1),tethered_trace_novel(:,2),2000,'.','MarkerFaceAlpha',0.1,'MarkerEdgeAlpha',0.1,...
+                                'MarkerFaceColor',novelColor,'MarkerEdgeColor',novelColor);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_use,behavior_use,j,[0.5 0.5 0.5],1.0);
+                            fig = plotVecs(fig,plot_table,plot_table_opp,events_c,behavior_c,j,[0.5 0.5 0.5],1.0);
+                            %plot(tethered_trace(:,1),tethered_trace(:,2),'b')
                             saveas(fig,sprintf('Cell_%d_Neutral',j));
                             close(fig)
                         end
                     end
             end
         end
+        %save(sprintf('tethered_trace_%d_%d.mat',an,ep),'tethered_trace');
         cd ..
     end
     cd ..
